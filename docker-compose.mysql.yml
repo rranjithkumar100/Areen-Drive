@@ -1,0 +1,20 @@
+# Local MySQL only — PHP runs via Herd (not Docker).
+# Start: docker compose -f docker-compose.mysql.yml up -d
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: areen
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - areen-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  areen-mysql-data:
