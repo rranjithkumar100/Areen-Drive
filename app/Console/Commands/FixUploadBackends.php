@@ -22,7 +22,14 @@ class FixUploadBackends extends Command
             'local',
         );
 
-        if (!$localBackend) {
+        $needsReset =
+            !$localBackend ||
+            DB::table('file_entries')
+                ->whereNotNull('upload_type')
+                ->whereNotIn('backend_id', $backendIds ?: [''])
+                ->exists();
+
+        if ($needsReset) {
             Setting::where('name', 'uploading')->delete();
             (new UploadBackendsSeeder())->run();
 
@@ -41,11 +48,6 @@ class FixUploadBackends extends Command
 
         DB::table('file_entries')
             ->whereNotNull('upload_type')
-            ->where(function ($query) use ($backendIds) {
-                $query
-                    ->whereNull('backend_id')
-                    ->orWhereNotIn('backend_id', $backendIds ?: ['']);
-            })
             ->update(['backend_id' => $localBackend['id']]);
 
         $admin = DB::table('users')->where('email', 'admin@admin.com')->first();
@@ -59,6 +61,8 @@ class FixUploadBackends extends Command
                 'created_at' => now(),
             ]);
         }
+
+        app(\Common\Settings\Settings::class)->loadSettings();
 
         $this->info(
             "Upload backend fixed. Local backend id: {$localBackend['id']}",
