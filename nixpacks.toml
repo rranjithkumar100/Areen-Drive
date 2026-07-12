@@ -12,6 +12,7 @@ nixPkgs = [
   "php84Extensions.mbstring",
   "php84Extensions.curl",
   "php84Extensions.fileinfo",
+  "php84Extensions.openssl",
   "php84Extensions.intl"
 ]
 

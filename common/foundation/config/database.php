@@ -32,15 +32,16 @@ return [
             'strict' => env('DB_STRICT', true),
             'engine' => null,
             'options' => extension_loaded('pdo_mysql')
-                ? array_filter([
-                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                    (defined('PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY')
-                        ? PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY
-                        : 1014) => filter_var(
-                        env('MYSQL_GET_SERVER_PUBLIC_KEY', true),
-                        FILTER_VALIDATE_BOOL,
-                    ),
-                ])
+                ? array_merge(
+                    [
+                        (defined('PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY')
+                            ? PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY
+                            : 1014) => 1,
+                    ],
+                    array_filter([
+                        PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                    ]),
+                )
                 : [],
         ],
 
@@ -60,15 +61,16 @@ return [
             'strict' => env('DB_STRICT', true),
             'engine' => null,
             'options' => extension_loaded('pdo_mysql')
-                ? array_filter([
-                    PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                    (defined('PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY')
-                        ? PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY
-                        : 1014) => filter_var(
-                        env('MYSQL_GET_SERVER_PUBLIC_KEY', true),
-                        FILTER_VALIDATE_BOOL,
-                    ),
-                ])
+                ? array_merge(
+                    [
+                        (defined('PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY')
+                            ? PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY
+                            : 1014) => 1,
+                    ],
+                    array_filter([
+                        PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                    ]),
+                )
                 : [],
         ],
     ],
