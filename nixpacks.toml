@@ -1,6 +1,7 @@
 [phases.setup]
 nixPkgs = [
   "php84",
+  "php84Packages.composer",
   "php84Extensions.bcmath",
   "php84Extensions.gd",
   "php84Extensions.pcntl",
@@ -19,10 +20,11 @@ nixPkgs = [
 cmds = ["composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-ftp"]
 
 [phases.build]
-cmds = ["npm ci", "npm run build"]
+cmds = ["npm ci --omit=dev", "npm run build"]
 
 [start]
 cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
 
 [variables]
 COMPOSER_ALLOW_SUPERUSER = "1"
+NIXPACKS_PHP_ROOT_DIR = "/app/public"
