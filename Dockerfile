@@ -25,6 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zip \
     && rm -rf /var/lib/apt/lists/*
 
+RUN printf "upload_max_filesize=512M\npost_max_size=512M\nmemory_limit=512M\nmax_execution_time=300\n" \
+    > /usr/local/etc/php/conf.d/uploads.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
@@ -32,9 +35,23 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-ftp
+RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-ftp \
+    && mkdir -p \
+        storage/app/uploads \
+        storage/app/temp/zips \
+        storage/tus \
+        storage/framework/cache/data \
+        storage/framework/sessions \
+        storage/framework/views \
+        storage/logs \
+        bootstrap/cache \
+        public/storage/branding-images \
+    && cp -R demo-storage/uploads/. storage/app/uploads/ \
+    && cp -R demo-storage/branding-images/. public/storage/branding-images/ \
+    && chmod -R 775 storage bootstrap/cache public/storage \
+    && chmod +x docker-entrypoint.sh
 
 ENV PORT=8080
 EXPOSE 8080
 
-CMD php artisan config:clear && (php artisan migrate --force || true) && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
+CMD ["./docker-entrypoint.sh"]

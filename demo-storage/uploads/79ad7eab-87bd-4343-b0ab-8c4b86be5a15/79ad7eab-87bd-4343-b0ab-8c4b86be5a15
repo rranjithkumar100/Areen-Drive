@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" width="1000" height="1200">
+  <!-- Background -->
+  <rect x="0" y="0" width="1000" height="1200" fill="#f0f2f5"/>
+  
+  <!-- Header -->
+  <rect x="100" y="50" width="800" height="100" rx="10" ry="10" fill="#4a6fa5" stroke="#2c4c7c" stroke-width="2"/>
+  <text x="500" y="110" font-family="Arial, sans-serif" font-size="40" font-weight="bold" text-anchor="middle" fill="white">DATA COLLECTION</text>
+  
+  <!-- Mobile Device in Center -->
+  <rect x="425" y="200" width="150" height="280" rx="15" ry="15" fill="#333" stroke="#000" stroke-width="2"/>
+  <rect x="435" y="220" width="130" height="220" rx="5" ry="5" fill="#4287f5"/>
+  <text x="500" y="335" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="white">DATA PIPELINE</text>
+  <circle cx="500" cy="460" r="10" fill="#555" stroke="#000" stroke-width="1"/>
+  
+  <!-- Connecting Lines -->
+  <line x1="500" y1="200" x2="500" y2="180" stroke="#333" stroke-width="3"/>
+  <line x1="500" y1="480" x2="500" y2="500" stroke="#333" stroke-width="3"/>
+  <line x1="425" y1="340" x2="405" y2="340" stroke="#333" stroke-width="3"/>
+  <line x1="575" y1="340" x2="595" y2="340" stroke="#333" stroke-width="3"/>
+  <line x1="405" y1="340" x2="320" y2="180" stroke="#333" stroke-width="3"/>
+  <line x1="405" y1="340" x2="320" y2="500" stroke="#333" stroke-width="3"/>
+  <line x1="595" y1="340" x2="700" y2="180" stroke="#333" stroke-width="3"/>
+  <line x1="595" y1="340" x2="700" y2="500" stroke="#333" stroke-width="3"/>
+  
+  <!-- Section 1: User and device info -->
+  <rect x="100" y="180" width="250" height="260" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="100" y="180" width="250" height="40" rx="10" ry="10" fill="#6495ED" stroke="#4169E1" stroke-width="2"/>
+  <text x="225" y="208" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">User and device info</text>
+  
+  <text x="120" y="240" font-family="Arial, sans-serif" font-size="14" fill="#555555">• user_id</text>
+  <text x="120" y="270" font-family="Arial, sans-serif" font-size="14" fill="#555555">• device_model</text>
+  <text x="120" y="300" font-family="Arial, sans-serif" font-size="14" fill="#555555">• device_manufacturer</text>
+  <text x="120" y="330" font-family="Arial, sans-serif" font-size="14" fill="#555555">• os_version</text>
+  <text x="120" y="360" font-family="Arial, sans-serif" font-size="14" fill="#555555">• device_id</text>
+  <text x="120" y="390" font-family="Arial, sans-serif" font-size="14" fill="#555555">• app_version_name</text>
+  <text x="120" y="420" font-family="Arial, sans-serif" font-size="14" fill="#555555">• app_version_code</text>
+  
+  <!-- Section 2: Location info -->
+  <rect x="100" y="500" width="250" height="310" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="100" y="500" width="250" height="40" rx="10" ry="10" fill="#6495ED" stroke="#4169E1" stroke-width="2"/>
+  <text x="225" y="528" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">Location info</text>
+  
+  <text x="120" y="560" font-family="Arial, sans-serif" font-size="14" fill="#555555">• latitude</text>
+  <text x="120" y="590" font-family="Arial, sans-serif" font-size="14" fill="#555555">• longitude</text>
+  <text x="120" y="620" font-family="Arial, sans-serif" font-size="14" fill="#555555">• location_provider</text>
+  <text x="120" y="650" font-family="Arial, sans-serif" font-size="14" fill="#555555">• accuracy</text>
+  <text x="120" y="680" font-family="Arial, sans-serif" font-size="14" fill="#555555">• altitude</text>
+  <text x="120" y="710" font-family="Arial, sans-serif" font-size="14" fill="#555555">• speed</text>
+  <text x="120" y="740" font-family="Arial, sans-serif" font-size="14" fill="#555555">• bearing</text>
+  <text x="120" y="770" font-family="Arial, sans-serif" font-size="14" fill="#555555">• location_time</text>
+  <text x="120" y="800" font-family="Arial, sans-serif" font-size="14" fill="#555555">• mock_location</text>
+  
+  <!-- Section 3: Accuracies -->
+  <rect x="650" y="180" width="250" height="150" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="650" y="180" width="250" height="40" rx="10" ry="10" fill="#6495ED" stroke="#4169E1" stroke-width="2"/>
+  <text x="775" y="208" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">Accuracies</text>
+  
+  <text x="670" y="240" font-family="Arial, sans-serif" font-size="14" fill="#555555">• vertical_accuracy</text>
+  <text x="670" y="270" font-family="Arial, sans-serif" font-size="14" fill="#555555">• speed_accuracy</text>
+  <text x="670" y="300" font-family="Arial, sans-serif" font-size="14" fill="#555555">• bearing_accuracy</text>
+  
+  <!-- Section 4: GNSS Info -->
+  <rect x="650" y="500" width="250" height="350" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="650" y="500" width="250" height="40" rx="10" ry="10" fill="#6495ED" stroke="#4169E1" stroke-width="2"/>
+  <text x="775" y="528" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">GNSS Info</text>
+  
+  <text x="670" y="560" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_satellite_count</text>
+  <text x="670" y="590" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_total_used_satellites</text>
+  <text x="670" y="620" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_svids</text>
+  <text x="670" y="650" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_used_in_fix_list</text>
+  <text x="670" y="680" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_cn0_list</text>
+  <text x="670" y="710" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_cn0_max_value</text>
+  <text x="670" y="740" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_constellations</text>
+  <text x="670" y="770" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_elevations</text>
+  <text x="670" y="800" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_frequencies</text>
+  <text x="670" y="830" font-family="Arial, sans-serif" font-size="14" fill="#555555">• gnss_average_cn0</text>
+  
+  <!-- Section 5: Extra Info -->
+  <rect x="375" y="500" width="250" height="150" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="375" y="500" width="250" height="40" rx="10" ry="10" fill="#6495ED" stroke="#4169E1" stroke-width="2"/>
+  <text x="500" y="528" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">Extra Info</text>
+  
+  <text x="395" y="560" font-family="Arial, sans-serif" font-size="14" fill="#555555">• is_usb_connected</text>
+  <text x="395" y="590" font-family="Arial, sans-serif" font-size="14" fill="#555555">• log_type</text>
+  <text x="395" y="620" font-family="Arial, sans-serif" font-size="14" fill="#555555">• timestamp</text>
+  
+  <!-- API Connection -->
+  <rect x="375" y="800" width="250" height="80" rx="50" ry="50" fill="#f5a742" stroke="#e09236" stroke-width="2"/>
+  <text x="500" y="850" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">API</text>
+  
+  <!-- Arrow to API -->
+  <path d="M500,650 L500,790" stroke="#333" stroke-width="3" stroke-dasharray="5,5"/>
+  <polygon points="500,800 493,780 507,780" fill="#333"/>
+  
+  <!-- Data Flow Decoration -->
+  <circle cx="500" cy="680" r="8" fill="#f5a742"/>
+  <circle cx="500" cy="700" r="8" fill="#f5a742"/>
+  <circle cx="500" cy="720" r="8" fill="#f5a742"/>
+  <circle cx="500" cy="740" r="8" fill="#f5a742"/>
+  <circle cx="500" cy="760" r="8" fill="#f5a742"/>
+  
+  <!-- Legend -->
+  <rect x="375" y="920" width="250" height="200" rx="10" ry="10" fill="#ffffff" stroke="#cccccc" stroke-width="2"/>
+  <rect x="375" y="920" width="250" height="40" rx="10" ry="10" fill="#333333" stroke="#000000" stroke-width="2"/>
+  <text x="500" y="948" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="white">Data Categories</text>
+  
+  <rect x="395" y="980" width="20" height="20" fill="#6495ED"/>
+  <text x="425" y="995" font-family="Arial, sans-serif" font-size="14" fill="#333333" text-anchor="start">Category Headers</text>
+  
+  <rect x="395" y="1020" width="20" height="20" fill="#f5a742"/>
+  <text x="425" y="1035" font-family="Arial, sans-serif" font-size="14" fill="#333333" text-anchor="start">API Endpoint</text>
+  
+  <rect x="395" y="1060" width="20" height="20" fill="#4287f5"/>
+  <text x="425" y="1075" font-family="Arial, sans-serif" font-size="14" fill="#333333" text-anchor="start">Mobile Device</text>
+</svg>
