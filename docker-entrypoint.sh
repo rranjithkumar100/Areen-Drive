@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export DISABLE_CSRF="${DISABLE_CSRF:-true}"
+
 mkdir -p \
   storage/app/uploads \
   storage/app/temp/zips \

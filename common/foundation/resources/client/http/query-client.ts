@@ -2,13 +2,17 @@ import {getSettingsPreviewMode} from '@common/admin/settings/preview/use-setting
 import {errorStatusIs} from '@common/http/error-status-is';
 import {getEchoSocketId} from '@common/http/get-echo-socket-id';
 import {QueryClient} from '@tanstack/react-query';
-import {mergeBootstrapData} from '@ui/bootstrap-data/bootstrap-data-store';
+import {
+  getBootstrapData,
+  mergeBootstrapData,
+} from '@ui/bootstrap-data/bootstrap-data-store';
 import {isAbsoluteUrl} from '@ui/utils/urls/is-absolute-url';
 import axios, {
   AxiosError,
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from 'axios';
+import {getCookie} from 'react-use-cookie';
 import {getActiveWorkspaceId} from '../workspace/active-workspace-id';
 
 export const queryClient = new QueryClient({
@@ -46,6 +50,20 @@ apiClient.defaults.headers = {
 };
 
 const internalEndpoints = ['auth', 'secure', 'log-viewer', 'horizon'];
+
+function getCsrfHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {};
+  const xsrfToken = getCookie('XSRF-TOKEN');
+  if (xsrfToken) {
+    headers['X-XSRF-TOKEN'] = xsrfToken;
+  }
+  const csrfToken = getBootstrapData().csrf_token;
+  if (csrfToken) {
+    headers['X-CSRF-TOKEN'] = csrfToken;
+  }
+  return headers;
+}
+
 // @ts-ignore
 apiClient.interceptors.request.use((config: AxiosRequestConfig) => {
   if (
@@ -118,6 +136,13 @@ apiClient.interceptors.request.use((config: AxiosRequestConfig) => {
     };
   }
 
+  if (method && !['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+    config.headers = {
+      ...config.headers,
+      ...getCsrfHeaders(),
+    };
+  }
+
   return config;
 });
 
@@ -173,6 +198,10 @@ apiClient.interceptors.response.use(
 
       try {
         await refreshCsrfToken();
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          ...getCsrfHeaders(),
+        };
         return apiClient(originalRequest);
       } catch {
         return Promise.reject(error);
