@@ -45,6 +45,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 
 COPY . .
 
+COPY --from=assets /app/public/build ./public/build
+
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=ext-ftp \
     && mkdir -p \
         storage/app/uploads \
@@ -62,6 +64,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-pl
     && chmod +x docker-entrypoint.sh
 
 ENV PORT=8080
+ENV DISABLE_CSRF=true
 EXPOSE 8080
 
 CMD ["./docker-entrypoint.sh"]
