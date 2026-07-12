@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Common\Database\Seeders\UploadBackendsSeeder;
 use Common\Settings\Models\Setting;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class FixUploadBackends extends Command
@@ -15,6 +16,9 @@ class FixUploadBackends extends Command
 
     public function handle(): int
     {
+        Cache::forget('settings.public');
+        app(\Common\Settings\Settings::class)->loadSettings();
+
         $uploading = settings('uploading');
         $backendIds = collect($uploading['backends'] ?? [])->pluck('id')->all();
         $localBackend = collect($uploading['backends'] ?? [])->firstWhere(

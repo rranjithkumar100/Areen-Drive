@@ -15,6 +15,7 @@ mkdir -p \
 chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
 php artisan config:clear
+php artisan cache:clear
 php artisan migrate --force || true
 php artisan app:fix-upload-backends
 
