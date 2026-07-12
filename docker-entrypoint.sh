@@ -16,5 +16,6 @@ chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
 php artisan config:clear
 php artisan migrate --force || true
+php artisan app:fix-upload-backends || true
 
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"
