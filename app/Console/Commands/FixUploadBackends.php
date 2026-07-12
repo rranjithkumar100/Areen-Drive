@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Common\Database\Seeders\UploadBackendsSeeder;
 use Common\Settings\Models\Setting;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -20,13 +21,12 @@ class FixUploadBackends extends Command
         app(\Common\Settings\Settings::class)->loadSettings();
 
         $uploading = settings('uploading');
-        $backendIds = collect($uploading['backends'] ?? [])->pluck('id')->all();
-        $localBackend = collect($uploading['backends'] ?? [])->firstWhere(
-            'type',
-            'local',
-        );
+        $backends = Arr::get($uploading, 'backends', []);
+        $backendIds = collect($backends)->pluck('id')->all();
+        $localBackend = collect($backends)->firstWhere('type', 'local');
 
         $needsReset =
+            empty($backends) ||
             !$localBackend ||
             DB::table('file_entries')
                 ->whereNotNull('upload_type')
@@ -35,14 +35,16 @@ class FixUploadBackends extends Command
 
         if ($needsReset) {
             Setting::where('name', 'uploading')->delete();
+            Cache::forget('settings.public');
             (new UploadBackendsSeeder())->run();
 
+            Cache::forget('settings.public');
+            app(\Common\Settings\Settings::class)->loadSettings();
+
             $uploading = settings('uploading');
-            $backendIds = collect($uploading['backends'] ?? [])->pluck('id')->all();
-            $localBackend = collect($uploading['backends'] ?? [])->firstWhere(
-                'type',
-                'local',
-            );
+            $backends = Arr::get($uploading, 'backends', []);
+            $backendIds = collect($backends)->pluck('id')->all();
+            $localBackend = collect($backends)->firstWhere('type', 'local');
         }
 
         if (!$localBackend) {
@@ -66,6 +68,7 @@ class FixUploadBackends extends Command
             ]);
         }
 
+        Cache::forget('settings.public');
         app(\Common\Settings\Settings::class)->loadSettings();
 
         $this->info(

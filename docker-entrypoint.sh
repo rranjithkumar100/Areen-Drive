@@ -14,6 +14,14 @@ mkdir -p \
 
 chmod -R 775 storage bootstrap/cache public/storage 2>/dev/null || true
 
+if [ -d demo-storage/uploads ]; then
+  cp -Rn demo-storage/uploads/. storage/app/uploads/ 2>/dev/null || true
+fi
+
+if [ -d demo-storage/branding-images ]; then
+  cp -Rn demo-storage/branding-images/. public/storage/branding-images/ 2>/dev/null || true
+fi
+
 php artisan config:clear
 php artisan cache:clear
 php artisan migrate --force || true
