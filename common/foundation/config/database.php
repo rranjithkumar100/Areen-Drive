@@ -34,6 +34,10 @@ return [
             'options' => extension_loaded('pdo_mysql')
                 ? array_filter([
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                    PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY => env(
+                        'MYSQL_GET_SERVER_PUBLIC_KEY',
+                        true,
+                    ),
                 ])
                 : [],
         ],
@@ -56,6 +60,10 @@ return [
             'options' => extension_loaded('pdo_mysql')
                 ? array_filter([
                     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                    PDO::MYSQL_ATTR_GET_SERVER_PUBLIC_KEY => env(
+                        'MYSQL_GET_SERVER_PUBLIC_KEY',
+                        true,
+                    ),
                 ])
                 : [],
         ],
