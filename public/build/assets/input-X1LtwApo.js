@@ -1,0 +1,2 @@
+import{aw as f,j as r,b3 as u,c as l}from"./main-0QxIHhpl.js";const x=f.forwardRef((s,i)=>{const{children:e,inputProps:o,wrapperProps:t,className:n,autoFocus:c,style:a,onClick:p}=s;return r.jsx("div",{...t,onClick:p,children:r.jsx("div",{...o,role:"group",className:l(n,"flex items-center focus-within:border-primary/90 focus-within:ring-1 focus-within:ring-inset focus-within:ring-primary/90"),ref:i,style:a,children:r.jsx(u,{autoFocus:c,children:e})})})});export{x as I};
+//# sourceMappingURL=input-X1LtwApo.js.map
