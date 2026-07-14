@@ -3,6 +3,17 @@ set -e
 
 export DISABLE_CSRF="${DISABLE_CSRF:-true}"
 
+# Railway injects env vars but does not create a .env file; admin settings need one.
+if [ ! -f .env ] && [ -f .env.example ]; then
+  : > .env
+  grep -E '^[A-Z][A-Z0-9_]*=' .env.example | cut -d= -f1 | while read -r key; do
+    val=$(printenv "$key" || true)
+    if [ -n "$val" ]; then
+      printf '%s=%s\n' "$key" "$val" >> .env
+    fi
+  done
+fi
+
 mkdir -p \
   storage/app/uploads \
   storage/app/temp/zips \
