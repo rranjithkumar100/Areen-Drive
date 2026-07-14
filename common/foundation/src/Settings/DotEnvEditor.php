@@ -11,6 +11,10 @@ class DotEnvEditor
 
     public function load(): array
     {
+        if (!file_exists(base_path($this->fileName))) {
+            return $this->loadFromProcessEnvironment();
+        }
+
         $dotEnv = Dotenv::create(
             RepositoryBuilder::createWithNoAdapters()->make(),
             [base_path()],
@@ -20,25 +24,89 @@ class DotEnvEditor
         $lowercaseValues = [];
 
         foreach ($values as $key => $value) {
-            if (strtolower($value) === 'null') {
-                $lowercaseValues[strtolower($key)] = null;
-            } elseif (strtolower($value) === 'false') {
-                $lowercaseValues[strtolower($key)] = false;
-            } elseif (strtolower($value) === 'true') {
-                $lowercaseValues[strtolower($key)] = true;
-            } elseif (preg_match('/\A([\'"])(.*)\1\z/', $value, $matches)) {
-                $lowercaseValues[strtolower($key)] = $matches[2];
-            } else {
-                $lowercaseValues[strtolower($key)] = $value;
-            }
+            $lowercaseValues[strtolower($key)] = $this->normalizeLoadedValue(
+                $value,
+            );
         }
 
         return $lowercaseValues;
     }
 
+    protected function loadFromProcessEnvironment(): array
+    {
+        $lowercaseValues = [];
+        $examplePath = base_path('.env.example');
+
+        if (!file_exists($examplePath)) {
+            foreach ($_ENV as $key => $value) {
+                if (is_string($key)) {
+                    $lowercaseValues[strtolower($key)] =
+                        $this->normalizeLoadedValue($value);
+                }
+            }
+
+            return $lowercaseValues;
+        }
+
+        foreach (
+            file($examplePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)
+            as $line
+        ) {
+            $line = trim($line);
+            if (
+                $line === '' ||
+                str_starts_with($line, '#') ||
+                !str_contains($line, '=')
+            ) {
+                continue;
+            }
+
+            [$key] = explode('=', $line, 2);
+            $key = trim($key);
+            $lowercaseValues[strtolower($key)] = $this->normalizeLoadedValue(
+                env($key),
+            );
+        }
+
+        return $lowercaseValues;
+    }
+
+    private function normalizeLoadedValue(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        if (strtolower($value) === 'null') {
+            return null;
+        }
+        if (strtolower($value) === 'false') {
+            return false;
+        }
+        if (strtolower($value) === 'true') {
+            return true;
+        }
+        if (preg_match('/\A([\'"])(.*)\1\z/', $value, $matches)) {
+            return $matches[2];
+        }
+
+        return $value;
+    }
+
     public function write(array|Collection $values = []): void
     {
-        $content = file_get_contents(base_path($this->fileName));
+        $path = base_path($this->fileName);
+
+        if (!file_exists($path)) {
+            $examplePath = base_path('.env.example');
+            if (file_exists($examplePath)) {
+                copy($examplePath, $path);
+            } else {
+                touch($path);
+            }
+        }
+
+        $content = file_get_contents($path);
 
         foreach ($values as $key => $value) {
             $value = $this->formatValue($value);
