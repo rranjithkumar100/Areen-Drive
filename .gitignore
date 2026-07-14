@@ -34,5 +34,4 @@ public/favicon.ico
 /storage/*.key
 Homestead.json
 Homestead.yaml
-.env
 data.ms
