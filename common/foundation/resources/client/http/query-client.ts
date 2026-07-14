@@ -198,10 +198,9 @@ apiClient.interceptors.response.use(
 
       try {
         await refreshCsrfToken();
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          ...getCsrfHeaders(),
-        };
+        Object.entries(getCsrfHeaders()).forEach(([key, value]) => {
+          originalRequest.headers.set(key, value);
+        });
         return apiClient(originalRequest);
       } catch {
         return Promise.reject(error);
