@@ -131,12 +131,12 @@ if (!\$email) {
 }
 \$updated = Illuminate\Support\Facades\DB::table('users')
     ->where('id', 1)
-    ->update(['email' => \$email, 'name' => 'Areen', 'updated_at' => now()]);
+    ->update(['email' => \$email, 'updated_at' => now()]);
 if (!\$updated) {
     \$updated = Illuminate\Support\Facades\DB::table('users')
         ->where('email', 'admin@admin.com')
         ->orWhere('email', \$email)
-        ->update(['email' => \$email, 'name' => 'Areen', 'updated_at' => now()]);
+        ->update(['email' => \$email, 'updated_at' => now()]);
 }
 echo \$updated ? \"Set admin user email to \$email\n\" : \"Admin email unchanged\n\";
 " || true
