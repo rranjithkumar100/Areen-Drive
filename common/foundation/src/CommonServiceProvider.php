@@ -91,6 +91,7 @@ use Common\Search\Drivers\Mysql\MysqlSearchEngine;
 use Common\ServerTiming\ServerTiming;
 use Common\ServerTiming\ServerTimingMiddleware;
 use Common\Settings\Events\SettingsSaved;
+use Common\Settings\Mail\BrevoApiMailer;
 use Common\Settings\Mail\GmailApiMailTransport;
 use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
@@ -738,6 +739,7 @@ class CommonServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(GmailClient::class);
+        $this->app->singleton(BrevoApiMailer::class);
     }
 
     private function setMorphMap(): void

@@ -17,6 +17,7 @@ use Common\Files\Traits\HasAttachedFileEntries;
 use Common\Notifications\NotificationSubscription;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
+use Common\Settings\Mail\BrevoApiMailer;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -420,8 +421,20 @@ abstract class BaseUser extends BaseModel implements
 
     public function sendPasswordResetNotification(mixed $token)
     {
-        ResetPassword::$createUrlCallback = function ($user, $token) {
-            return url("password/reset/$token");
+        $resetUrl = url("password/reset/$token");
+
+        if (app(BrevoApiMailer::class)->isConfigured()) {
+            app(BrevoApiMailer::class)->sendPasswordReset(
+                $this->getEmailForPasswordReset(),
+                $resetUrl,
+            );
+            return;
+        }
+
+        ResetPassword::$createUrlCallback = function ($user, $token) use (
+            $resetUrl
+        ) {
+            return $resetUrl;
         };
         $this->notify(new ResetPassword($token));
     }

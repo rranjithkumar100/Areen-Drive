@@ -74,6 +74,15 @@ php artisan cache:clear
 php artisan migrate --force || true
 php artisan app:fix-upload-backends
 
+php -r "
+require 'vendor/autoload.php';
+\$app = require 'bootstrap/app.php';
+\$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+\$key = getenv('BREVO_API_KEY') ?: env('BREVO_API_KEY');
+echo 'mail_mailer=' . (getenv('MAIL_MAILER') ?: env('MAIL_MAILER')) . PHP_EOL;
+echo 'brevo_api_key=' . (\$key ? 'set' : 'MISSING') . PHP_EOL;
+" || true
+
 if [ -n "$ADMIN_EMAIL" ]; then
   php -r "
 require 'vendor/autoload.php';
