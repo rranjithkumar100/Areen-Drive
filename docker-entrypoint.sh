@@ -48,6 +48,43 @@ if [ -f .env ]; then
   fi
 fi
 
+php -r "
+\$file = '.env';
+if (!file_exists(\$file)) {
+    return;
+}
+\$vars = [
+    'MAIL_MAILER' => getenv('MAIL_MAILER') ?: 'brevo',
+    'BREVO_API_KEY' => getenv('BREVO_API_KEY') ?: '',
+    'MAIL_FROM_ADDRESS' => getenv('MAIL_FROM_ADDRESS') ?: '',
+    'MAIL_FROM_NAME' => getenv('MAIL_FROM_NAME') ?: '',
+    'OUTGOING_EMAIL_ENABLED' => getenv('OUTGOING_EMAIL_ENABLED') ?: 'true',
+    'MAIL_SETUP' => getenv('MAIL_SETUP') ?: 'true',
+];
+\$lines = file_exists(\$file) ? file(\$file, FILE_IGNORE_NEW_LINES) : [];
+\$out = [];
+\$seen = [];
+foreach (\$lines as \$line) {
+    if (!preg_match('/^([A-Z0-9_]+)=/', \$line, \$m)) {
+        \$out[] = \$line;
+        continue;
+    }
+    \$key = \$m[1];
+    if (isset(\$vars[\$key]) && \$vars[\$key] !== '') {
+        \$out[] = \$key . '=' . \$vars[\$key];
+        \$seen[\$key] = true;
+    } else {
+        \$out[] = \$line;
+    }
+}
+foreach (\$vars as \$key => \$value) {
+    if (\$value !== '' && empty(\$seen[\$key])) {
+        \$out[] = \$key . '=' . \$value;
+    }
+}
+file_put_contents(\$file, implode(PHP_EOL, \$out) . PHP_EOL);
+" || true
+
 mkdir -p \
   storage/app/uploads \
   storage/app/temp/zips \

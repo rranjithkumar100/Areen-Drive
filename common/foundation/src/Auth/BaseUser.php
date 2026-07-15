@@ -18,7 +18,6 @@ use Common\Notifications\NotificationSubscription;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Common\Settings\Mail\BrevoApiMailer;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -422,21 +421,18 @@ abstract class BaseUser extends BaseModel implements
     public function sendPasswordResetNotification(mixed $token)
     {
         $resetUrl = url("password/reset/$token");
+        $mailer = app(BrevoApiMailer::class);
 
-        if (app(BrevoApiMailer::class)->isConfigured()) {
-            app(BrevoApiMailer::class)->sendPasswordReset(
-                $this->getEmailForPasswordReset(),
-                $resetUrl,
+        if (!$mailer->isConfigured()) {
+            throw new \RuntimeException(
+                'BREVO_API_KEY is not configured on the server.',
             );
-            return;
         }
 
-        ResetPassword::$createUrlCallback = function ($user, $token) use (
-            $resetUrl
-        ) {
-            return $resetUrl;
-        };
-        $this->notify(new ResetPassword($token));
+        $mailer->sendPasswordReset(
+            $this->getEmailForPasswordReset(),
+            $resetUrl,
+        );
     }
 
     public static function findAdmin(): ?self

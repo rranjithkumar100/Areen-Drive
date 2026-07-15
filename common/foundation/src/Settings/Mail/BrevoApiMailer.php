@@ -10,9 +10,61 @@ class BrevoApiMailer
 {
     public function apiKey(): ?string
     {
-        $key = getenv('BREVO_API_KEY') ?: env('BREVO_API_KEY');
+        foreach ($this->candidateKeys() as $key) {
+            if ($this->isApiKey($key)) {
+                return $key;
+            }
+        }
 
-        return $key ?: null;
+        return null;
+    }
+
+    /**
+     * @return list<string|null>
+     */
+    private function candidateKeys(): array
+    {
+        $keys = [
+            getenv('BREVO_API_KEY') ?: null,
+            env('BREVO_API_KEY') ?: null,
+            getenv('MAIL_PASSWORD') ?: null,
+            env('MAIL_PASSWORD') ?: null,
+            $this->readFromDotEnvFile('BREVO_API_KEY'),
+            $this->readFromDotEnvFile('MAIL_PASSWORD'),
+        ];
+
+        return array_values(array_unique(array_filter($keys)));
+    }
+
+    private function isApiKey(?string $key): bool
+    {
+        return is_string($key) && str_starts_with($key, 'xkeysib-');
+    }
+
+    private function readFromDotEnvFile(string $name): ?string
+    {
+        $path = base_path('.env');
+        if (!is_readable($path)) {
+            return null;
+        }
+
+        foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            if (!str_starts_with($line, "{$name}=")) {
+                continue;
+            }
+
+            $value = substr($line, strlen($name) + 1);
+            $value = trim($value, "\"'");
+
+            return $value !== '' ? $value : null;
+        }
+
+        return null;
     }
 
     public function isConfigured(): bool
@@ -23,7 +75,6 @@ class BrevoApiMailer
     public function sendPasswordReset(string $to, string $resetUrl): void
     {
         $subject = Lang::get('Reset Password Notification');
-        $appName = config('app.name', 'Areen');
         $expire = config(
             'auth.passwords.' .
                 config('auth.defaults.passwords') .
@@ -31,11 +82,30 @@ class BrevoApiMailer
             60,
         );
 
-        $html = view('common::emails.password-reset', [
-            'resetUrl' => $resetUrl,
-            'appName' => $appName,
-            'expire' => $expire,
-        ])->render();
+        $html = '<p>' .
+            e(
+                Lang::get(
+                    'You are receiving this email because we received a password reset request for your account.',
+                ),
+            ) .
+            '</p><p><a href="' .
+            e($resetUrl) .
+            '">' .
+            e(Lang::get('Reset Password')) .
+            '</a></p><p>' .
+            e(
+                Lang::get(
+                    'This password reset link will expire in :count minutes.',
+                    ['count' => $expire],
+                ),
+            ) .
+            '</p><p>' .
+            e(
+                Lang::get(
+                    'If you did not request a password reset, no further action is required.',
+                ),
+            ) .
+            '</p>';
 
         $text = implode("\n\n", [
             Lang::get(
