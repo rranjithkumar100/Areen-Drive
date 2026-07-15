@@ -7,8 +7,7 @@ export DISABLE_CSRF="${DISABLE_CSRF:-true}"
 export OUTGOING_EMAIL_ENABLED=true
 export MAIL_MAILER=smtp
 export MAIL_HOST=smtp-relay.brevo.com
-export MAIL_PORT="${MAIL_PORT:-465}"
-export MAIL_ENCRYPTION="${MAIL_ENCRYPTION:-ssl}"
+export MAIL_PORT=587
 export MAIL_USERNAME=b21434001@smtp-brevo.com
 export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-rranjithkumar100@gmail.com}"
 export MAIL_FROM_NAME="${MAIL_FROM_NAME:-Areen}"
@@ -45,7 +44,6 @@ if [ -f .env ]; then
   upsert_env MAIL_MAILER "$MAIL_MAILER"
   upsert_env MAIL_HOST "$MAIL_HOST"
   upsert_env MAIL_PORT "$MAIL_PORT"
-  upsert_env MAIL_ENCRYPTION "$MAIL_ENCRYPTION"
   upsert_env MAIL_USERNAME "$MAIL_USERNAME"
   upsert_env MAIL_FROM_ADDRESS "$MAIL_FROM_ADDRESS"
   upsert_env MAIL_FROM_NAME "$MAIL_FROM_NAME"
@@ -87,11 +85,11 @@ require 'vendor/autoload.php';
 \$app = require 'bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 \$email = getenv('ADMIN_EMAIL');
-\$user = App\Models\User::findAdmin();
-if (\$user && \$user->email !== \$email) {
+\$user = App\Models\User::findAdmin() ?? App\Models\User::query()->find(1);
+if (\$user) {
     \$user->email = \$email;
     \$user->save();
-    echo \"Updated admin email to \$email\n\";
+    echo \"Set admin user email to \$email\n\";
 }
 " || true
 fi
