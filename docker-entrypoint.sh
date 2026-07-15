@@ -3,16 +3,16 @@ set -e
 
 export DISABLE_CSRF="${DISABLE_CSRF:-true}"
 
-# Ensure Brevo SMTP is active on Railway (password comes from Railway env).
-export OUTGOING_EMAIL_ENABLED="${OUTGOING_EMAIL_ENABLED:-true}"
-export MAIL_MAILER="${MAIL_MAILER:-smtp}"
-export MAIL_HOST="${MAIL_HOST:-smtp-relay.brevo.com}"
-export MAIL_PORT="${MAIL_PORT:-587}"
-export MAIL_ENCRYPTION="${MAIL_ENCRYPTION:-tls}"
-export MAIL_USERNAME="${MAIL_USERNAME:-b21434001@smtp-brevo.com}"
+# Force Brevo SMTP on Railway (.env is not in the image; MAIL_MAILER=log breaks delivery).
+export OUTGOING_EMAIL_ENABLED=true
+export MAIL_MAILER=smtp
+export MAIL_HOST=smtp-relay.brevo.com
+export MAIL_PORT="${MAIL_PORT:-465}"
+export MAIL_ENCRYPTION="${MAIL_ENCRYPTION:-ssl}"
+export MAIL_USERNAME=b21434001@smtp-brevo.com
 export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-rranjithkumar100@gmail.com}"
 export MAIL_FROM_NAME="${MAIL_FROM_NAME:-Areen}"
-export MAIL_SETUP="${MAIL_SETUP:-true}"
+export MAIL_SETUP=true
 export ADMIN_EMAIL="${ADMIN_EMAIL:-rranjithkumar100@gmail.com}"
 
 upsert_env() {
@@ -87,7 +87,7 @@ require 'vendor/autoload.php';
 \$app = require 'bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 \$email = getenv('ADMIN_EMAIL');
-\$user = App\Models\User::query()->where('id', 1)->orWhere('email', 'admin@admin.com')->first();
+\$user = App\Models\User::findAdmin();
 if (\$user && \$user->email !== \$email) {
     \$user->email = \$email;
     \$user->save();
