@@ -724,10 +724,13 @@ class CommonServiceProvider extends ServiceProvider
         });
 
         $this->app->get('mail.manager')->extend('brevo', function (array $config) {
-            $apiKey =
-                $config['key'] ??
-                env('BREVO_API_KEY') ??
-                env('MAIL_PASSWORD');
+            $apiKey = env('BREVO_API_KEY') ?: ($config['key'] ?? null);
+
+            if (!$apiKey) {
+                throw new \InvalidArgumentException(
+                    'BREVO_API_KEY is not configured. Add it in Railway variables.',
+                );
+            }
 
             return (new BrevoTransportFactory())->create(
                 new Dsn('brevo+api', 'default', $apiKey),

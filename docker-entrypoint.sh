@@ -6,7 +6,7 @@ export DISABLE_CSRF="${DISABLE_CSRF:-true}"
 # Railway blocks outbound SMTP on non-Pro plans; use Brevo HTTPS API instead.
 export OUTGOING_EMAIL_ENABLED=true
 export MAIL_MAILER=brevo
-export BREVO_API_KEY="${BREVO_API_KEY:-${MAIL_PASSWORD:-}}"
+export BREVO_API_KEY="${BREVO_API_KEY:-}"
 export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-rranjithkumar100@gmail.com}"
 export MAIL_FROM_NAME="${MAIL_FROM_NAME:-Areen}"
 export MAIL_SETUP=true

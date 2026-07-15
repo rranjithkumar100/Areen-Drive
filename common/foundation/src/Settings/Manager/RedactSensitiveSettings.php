@@ -29,6 +29,7 @@ class RedactSensitiveSettings
         'stripe_key',
         'stripe_secret',
         'mail_password',
+        'brevo_api_key',
         'tmdb_api_key',
         'storage_digitalocean_key',
         'storage_digitalocean_secret',
