@@ -27,6 +27,18 @@ upsert_env() {
   fi
 }
 
+# Railway injects env vars but does not create a .env file; admin settings need one.
+if [ ! -f .env ] && [ -f .env.example ]; then
+  : > .env
+  grep -E '^[A-Z][A-Z0-9_]*=' .env.example | cut -d= -f1 | while read -r key; do
+    val=$(printenv "$key" || true)
+    if [ -n "$val" ]; then
+      printf '%s=%s\n' "$key" "$val" >> .env
+    fi
+  done
+fi
+
+# .env is not baked into the image (.dockerignore); always apply mail settings at boot.
 if [ -f .env ]; then
   upsert_env OUTGOING_EMAIL_ENABLED "$OUTGOING_EMAIL_ENABLED"
   upsert_env MAIL_MAILER "$MAIL_MAILER"
@@ -40,17 +52,6 @@ if [ -f .env ]; then
   if [ -n "$MAIL_PASSWORD" ]; then
     upsert_env MAIL_PASSWORD "$MAIL_PASSWORD"
   fi
-fi
-
-# Railway injects env vars but does not create a .env file; admin settings need one.
-if [ ! -f .env ] && [ -f .env.example ]; then
-  : > .env
-  grep -E '^[A-Z][A-Z0-9_]*=' .env.example | cut -d= -f1 | while read -r key; do
-    val=$(printenv "$key" || true)
-    if [ -n "$val" ]; then
-      printf '%s=%s\n' "$key" "$val" >> .env
-    fi
-  done
 fi
 
 mkdir -p \
