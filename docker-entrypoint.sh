@@ -10,9 +10,10 @@ export MAIL_HOST="${MAIL_HOST:-smtp-relay.brevo.com}"
 export MAIL_PORT="${MAIL_PORT:-587}"
 export MAIL_ENCRYPTION="${MAIL_ENCRYPTION:-tls}"
 export MAIL_USERNAME="${MAIL_USERNAME:-b21434001@smtp-brevo.com}"
-export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-admin@admin.com}"
+export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-rranjithkumar100@gmail.com}"
 export MAIL_FROM_NAME="${MAIL_FROM_NAME:-Areen}"
 export MAIL_SETUP="${MAIL_SETUP:-true}"
+export ADMIN_EMAIL="${ADMIN_EMAIL:-rranjithkumar100@gmail.com}"
 
 upsert_env() {
   key="$1"
@@ -79,5 +80,20 @@ php artisan config:clear
 php artisan cache:clear
 php artisan migrate --force || true
 php artisan app:fix-upload-backends
+
+if [ -n "$ADMIN_EMAIL" ]; then
+  php -r "
+require 'vendor/autoload.php';
+\$app = require 'bootstrap/app.php';
+\$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+\$email = getenv('ADMIN_EMAIL');
+\$user = App\Models\User::query()->where('id', 1)->orWhere('email', 'admin@admin.com')->first();
+if (\$user && \$user->email !== \$email) {
+    \$user->email = \$email;
+    \$user->save();
+    echo \"Updated admin email to \$email\n\";
+}
+" || true
+fi
 
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-8080}"
