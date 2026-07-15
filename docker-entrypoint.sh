@@ -3,12 +3,10 @@ set -e
 
 export DISABLE_CSRF="${DISABLE_CSRF:-true}"
 
-# Force Brevo SMTP on Railway (.env is not in the image; MAIL_MAILER=log breaks delivery).
+# Railway blocks outbound SMTP on non-Pro plans; use Brevo HTTPS API instead.
 export OUTGOING_EMAIL_ENABLED=true
-export MAIL_MAILER=smtp
-export MAIL_HOST=smtp-relay.brevo.com
-export MAIL_PORT=587
-export MAIL_USERNAME=b21434001@smtp-brevo.com
+export MAIL_MAILER=brevo
+export BREVO_API_KEY="${BREVO_API_KEY:-${MAIL_PASSWORD:-}}"
 export MAIL_FROM_ADDRESS="${MAIL_FROM_ADDRESS:-rranjithkumar100@gmail.com}"
 export MAIL_FROM_NAME="${MAIL_FROM_NAME:-Areen}"
 export MAIL_SETUP=true
@@ -42,14 +40,11 @@ fi
 if [ -f .env ]; then
   upsert_env OUTGOING_EMAIL_ENABLED "$OUTGOING_EMAIL_ENABLED"
   upsert_env MAIL_MAILER "$MAIL_MAILER"
-  upsert_env MAIL_HOST "$MAIL_HOST"
-  upsert_env MAIL_PORT "$MAIL_PORT"
-  upsert_env MAIL_USERNAME "$MAIL_USERNAME"
   upsert_env MAIL_FROM_ADDRESS "$MAIL_FROM_ADDRESS"
   upsert_env MAIL_FROM_NAME "$MAIL_FROM_NAME"
   upsert_env MAIL_SETUP "$MAIL_SETUP"
-  if [ -n "$MAIL_PASSWORD" ]; then
-    upsert_env MAIL_PASSWORD "$MAIL_PASSWORD"
+  if [ -n "$BREVO_API_KEY" ]; then
+    upsert_env BREVO_API_KEY "$BREVO_API_KEY"
   fi
 fi
 

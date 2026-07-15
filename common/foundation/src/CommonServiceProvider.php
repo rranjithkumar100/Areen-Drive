@@ -92,6 +92,8 @@ use Common\ServerTiming\ServerTiming;
 use Common\ServerTiming\ServerTimingMiddleware;
 use Common\Settings\Events\SettingsSaved;
 use Common\Settings\Mail\GmailApiMailTransport;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
+use Symfony\Component\Mailer\Transport\Dsn;
 use Common\Settings\Mail\GmailClient;
 use Common\Settings\Models\Setting;
 use Common\Settings\Settings;
@@ -719,6 +721,17 @@ class CommonServiceProvider extends ServiceProvider
         $this->app->get('mail.manager');
         $this->app->get('mail.manager')->extend('gmailApi', function () {
             return new GmailApiMailTransport();
+        });
+
+        $this->app->get('mail.manager')->extend('brevo', function (array $config) {
+            $apiKey =
+                $config['key'] ??
+                env('BREVO_API_KEY') ??
+                env('MAIL_PASSWORD');
+
+            return (new BrevoTransportFactory())->create(
+                new Dsn('brevo+api', 'default', $apiKey),
+            );
         });
 
         $this->app->singleton(GmailClient::class);
