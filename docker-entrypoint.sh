@@ -126,12 +126,18 @@ require 'vendor/autoload.php';
 \$app = require 'bootstrap/app.php';
 \$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 \$email = getenv('ADMIN_EMAIL');
-\$user = App\Models\User::findAdmin() ?? App\Models\User::query()->find(1);
-if (\$user) {
-    \$user->email = \$email;
-    \$user->save();
-    echo \"Set admin user email to \$email\n\";
+if (!\$email) {
+    return;
 }
+\$updated = Illuminate\Support\Facades\DB::table('users')
+    ->where('id', 1)
+    ->update(['email' => \$email, 'updated_at' => now()]);
+if (!\$updated) {
+    \$updated = Illuminate\Support\Facades\DB::table('users')
+        ->where('email', 'admin@admin.com')
+        ->update(['email' => \$email, 'updated_at' => now()]);
+}
+echo \$updated ? \"Set admin user email to \$email\n\" : \"Admin email unchanged\n\";
 " || true
 fi
 
