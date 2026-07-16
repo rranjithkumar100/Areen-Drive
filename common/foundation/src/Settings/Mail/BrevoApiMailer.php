@@ -139,9 +139,15 @@ class BrevoApiMailer
             config('mail.from.address') ?:
             env('MAIL_FROM_ADDRESS') ?:
             'rranjithkumar100@gmail.com';
+        $fromName = env('MAIL_FROM_NAME') ?: config('mail.from.name') ?: 'Areen';
+        if ($fromName === '' || $fromName === null) {
+            $fromName = 'Areen';
+        }
+
         $payload = [
             'sender' => [
                 'email' => $fromAddress,
+                'name' => $fromName,
             ],
             'to' => [['email' => $to]],
             'subject' => $subject,
