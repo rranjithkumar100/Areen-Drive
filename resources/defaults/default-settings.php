@@ -442,6 +442,6 @@ return [
     ['name' => 'drive.default_view', 'value' => 'grid'],
     ['name' => 'drive.send_share_notification', 'value' => false],
     ['name' => 'share.suggest_emails', 'value' => false],
-    ['name' => 'drive.default_available_space', 'value' => 1024 * 1024 * 1024], // 1GB
+    ['name' => 'drive.default_available_space', 'value' => 10 * 1024 * 1024 * 1024], // 10GB
     ['name' => 'drive.direct_links', 'value' => true],
 ];

@@ -14,6 +14,7 @@ class FileUploadValidator
         protected int|null $maxFileSize = null,
         protected int|null $usedSpace = null,
         protected int|null $availableSpace = null,
+        protected string|null $uploadType = null,
     ) {}
 
     public static function validateForUploadType(
@@ -30,6 +31,7 @@ class FileUploadValidator
             maxFileSize: $uploadType->maxFileSize(),
             usedSpace: $spaceUsage['used'] ?? null,
             availableSpace: $spaceUsage['available'] ?? null,
+            uploadType: $uploadType->name,
         ))->validate(fileSize: $fileSize, extension: $extension, mime: $mime);
     }
 
@@ -77,7 +79,7 @@ class FileUploadValidator
         $enoughSpace = $usedSpace + $fileSize <= $this->availableSpace;
 
         if (!$enoughSpace) {
-            return self::notEnoughSpaceMessage();
+            return self::notEnoughSpaceMessage($this->uploadType);
         }
 
         return null;
@@ -185,13 +187,15 @@ class FileUploadValidator
         return number_format($bytes) . ' bytes';
     }
 
-    public static function notEnoughSpaceMessage(): string
+    public static function notEnoughSpaceMessage(?string $uploadType = null): string
     {
         return __(
             'You have exhausted your allowed space of :space. Delete some files or upgrade your plan.',
             [
                 'space' => self::formatBytes(
-                    (new GetUserSpaceUsage())->getAvailableSpace(),
+                    (new GetUserSpaceUsage(
+                        uploadType: $uploadType,
+                    ))->getAvailableSpace(),
                 ),
             ],
         );
